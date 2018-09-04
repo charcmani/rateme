@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{user.username}}{% endblock %}
+
+{% block content %}
+{% load bootstrap3 %}
+
+{% if user.is_authenticated %}
+	<center>
+		<h1>Hi {{ user.username }}!</h1>
+	</center>
+  	<br><br><br>
+  	<div class="row">
+  	<div class="col-md-4">
+  	</div>
+  	<div class="col-md-4">
+  	<a href="/users/entry">
+  	<button class="btn btn-primary btn-large btn-block" type = "submit" value = "Login" >
+                  <strong>New Entry</strong>
+    </button>
+    </a>
+  	</div>
+  	<div class="col-md-4">
+  	</div>
+  	</div>
+  	<br><br><br>
+  	<div class="row">
+  	<div class="col-md-4">
+  	</div>
+  	<div class="col-md-4">
+  	<a href="/users/leaderboard">
+  	<button class="btn btn-primary btn-large btn-block" type = "submit" value = "Login" >
+                  <strong>LeaderBoard</strong>
+    </button>
+    </a>
+  	</div>
+  	<div class="col-md-4">
+  	</div>
+  	</div>
+  	<br><br><br>
+  	<div class="row">
+  	<div class="col-md-4">
+  	</div>
+  	<div class="col-md-4">
+  	<a href="/users/report">
+  	<button class="btn btn-primary btn-large btn-block" type = "submit" value = "Login" >
+                  <strong>Check Report</strong>
+    </button>
+    </a>
+  	</div>
+  	<div class="col-md-4">
+  	</div>
+  	</div>
+  	<br><br><br>
+  	<div class="row">
+  	<div class="col-md-4">
+  	</div>
+  	</div>
+  	<div class="col-md-4">
+  	</div>
+  	</div>
+
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}

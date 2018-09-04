@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <title>{% block title %}RateMe{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.4.5/galleria.min.js"></script>
+    <link rel="shortcut icon" type="image/png" href="./favicon.png"/>
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'index' %}">Rate.me</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="{% url 'entry' %}">New Entry</a></li>
+      <li><a href="{% url 'leaderboard' %}">LeaderBoard</a></li>
+      <li><a href="{% url 'report' %}">Check Reports</a></li>
+     
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/users/profile/{{user.username}}"><strong>Profile</strong></a></li>
+    	<li><a href="{% url 'signup' %}"><strong>SignUp</strong></a></li>
+    	<li class="active"><a href="{% url 'logout' %}"><strong>Logout</strong></a></li>
+
+    </ul>
+  </div>
+</nav>
+  <div class='container'>
+    {% block content %}
+    {% endblock %}
+  </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+{% load bootstrap3 %}
+<div class="container">
+<h1>LeaderBoard</h1>
+<table class="table">
+<th>Username</th><th>Ratings</th>
+{% for name in userdata %}
+	{% if name != '' %}
+	<tr>
+	<td><a href="/users/profile/{{name.1}}">{{name.1}}</a></td><td>{{name.0}}</td>
+	<tr>
+	{% endif %}
+{% endfor %}
+</table>
+</div>
+{% endblock content %}

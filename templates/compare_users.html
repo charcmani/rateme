@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Compare Users{% endblock %}
+
+{% block content %}
+<table class="table">
+	<th> Category</th>
+	<th> Winner</th>	
+	<tr>
+		<td>Movies</td>
+		<td>{{winner.0}}</td>
+	</tr>
+	<tr>
+		<td>Went Out</td>
+		<td>{{winner.1}}</td>
+	</tr>
+	<tr>
+		<td>Lectures</td>
+		<td>{{winner.2}}</td>
+	</tr>
+	<tr>
+		<td>Self Study</td>
+		<td>{{winner.3}}</td>
+	</tr>
+	<tr>
+		<td>Sleep</td>
+		<td>{{winner.4}}</td>
+	</tr>
+	<tr>
+		<td>Exercise</td>
+		<td>{{winner.5}}</td>
+	</tr>
+</table>
+{% endblock %}

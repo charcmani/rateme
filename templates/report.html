@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}{{user.username}}'s Perfromance{% endblock %}
+
+{% block content %}
+{% load bootstrap3 %}
+
+<div class="container"> 
+<h1>Performance</h1>
+<div class="jumbotron">
+<center>
+	<img src="{{path.pie.url}}">
+</center>
+	
+</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}{{data.username}}'s Profile{% endblock %}
+
+{% block content %}
+{% load bootstrap3 %}
+
+<div class="container"> 
+<div class="row">
+	<div class="col-md-10">
+		<h1>{{data.username}}'s Profile</h1>
+		<h4>Rating: {{data.rating}}</h4>
+		<hr>
+		<a href="{% url 'updatepic' %}">
+		<button class="btn btn-default">
+			<h5>Change Profile Picture</h5>
+		</button>
+		</a>
+		<a href="{% url 'compareform' %}">
+		<button class="btn btn-default">
+			<h5>Compare Users</h5>
+		</button>
+		</a>
+		
+	</div>
+	<div class="col-md-2">
+		<img class='round' src="{{data.dp.url}}" width="150px" height="150px">
+	</div>
+	
+
+</div>
+
+<hr>
+<div class="row">
+	<div class='col-md-6'>
+	<div class="well">
+		<strong>Username</strong>: {{data.username}}
+	</div>
+	<div class="well">
+		 <strong>Entries</strong>: {{data.logs}}
+	</div>
+	<div class="well">
+		 <strong>Lectures</strong>: {{data.totLectures}}
+	</div>
+	<div class="well">
+		 <strong>Self Study</strong>: {{data.totStudy}}
+	</div>
+	<div class="well">
+		 <strong>Movies</strong>: {{data.totMovie}}
+	</div>
+	<div class="well">
+		 <strong>Went Out</strong>: {{data.totWent}}
+	</div>
+	<div class="well">
+		 <strong>Sleep</strong>: {{data.totSleep}}
+	</div>
+	<div class="well">
+		 <strong>Exercise</strong>: {{data.totExercise}}
+	</div>
+
+	</div>
+	<div class='col-md-6'>
+		<img src="{{data.pie.url}}">
+	</div>
+	
+</div>
+	
+</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,25 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Password reset on localhost:8000
+From: webmaster@localhost
+To: qwerty@abc.com
+Date: Mon, 20 Aug 2018 03:06:08 -0000
+Message-ID: <153473436826.454.15352224727313485795@shubhanshu-HP-Laptop>
+
+
+You're receiving this email because you requested a password reset for your user account at localhost:8000.
+
+Please go to the following page and choose a new password:
+
+http://localhost:8000/users/reset/Mg/4yw-1eb9a4aeecf94a66a8f4/
+
+Your username, in case you've forgotten: shu
+
+Thanks for using our site!
+
+The localhost:8000 team
+
+
+
+-------------------------------------------------------------------------------
