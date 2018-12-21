@@ -30,6 +30,15 @@ class Entry(models.Model):
 	exercise = models.IntegerField(default=0)
 	went_out = models.IntegerField(default=0)
 	sleep = models.IntegerField(default=0)
+
+class RatingHistory(models.Model):
+	"""
+	Table to store rating of diff users
+	"""
+	username = models.ForeignKey(UserDetail,on_delete=models.CASCADE,db_column='username')
+	rating = models.IntegerField(default=0)
+	
+
  
 
 

@@ -3,33 +3,16 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy,reverse
 from django.views import generic
+
 from .forms import NewEntry,ChangeDp
-from .models import Entry,UserDetail
+from .models import Entry,UserDetail,RatingHistory
+from .GraphPlot import poltPieChart
+
 from datetime import datetime
-import matplotlib.pyplot as plt
-import os
- 
+
 
 #helper functions
-def poltPieChart(labels,sizes,username):
-	#colors
-	colors = ['#ff9999','#66b3ff','#99ff99','#ffcc99'] 
-	fig1, ax1 = plt.subplots()
-	patches, texts, autotexts = ax1.pie(sizes, colors = colors, labels=labels, autopct='%1.1f%%', startangle=90)
-	for text in texts:
-	    text.set_color('grey')
-	for autotext in autotexts:
-	    autotext.set_color('grey')
-	# Equal aspect ratio ensures that pie is drawn as a circle
-	ax1.axis('equal')  
-	plt.tight_layout()
-	mainPath=os.getcwd()
-	path=os.getcwd()+'/MEDIA'
-	os.chdir(path)
-	name = username+'.png'
-	plt.savefig(name)
-	os.chdir(mainPath)
-	return name
+
 # Create your views here.
 
 def index (request):
@@ -50,21 +33,17 @@ def entryNew(request):
 	if request.method == 'POST':
 		curNewEntry = NewEntry(request.POST)
 		print("HerePOST")
-		if True:
+		if True:     #Correct Form validation goes here
 			print("HEREDB")
-			userbase = UserDetail()
-			entry = Entry()
-			userPresent = Entry.objects.filter(username=request.user.username)
-			if len(userPresent)==0:
-				userbase.username = request.user.username
+			try:
+				UserDetail.objects.get(username=request.user.username)
+			except UserDetail.DoesNotExist:
+				userbase = UserDetail(username=request.user.username)
 				userbase.save()
-			entry.username = UserDetail.objects.get(username=request.user.username)
-			entry.movie = int(request.POST['movie'])
-			entry.lectures = int(request.POST['lecture'])
-			entry.self_study = int(request.POST['self_study'])
-			entry.exercise = int (request.POST['exercise'])
-			entry.went_out = int(request.POST['went_out'])
-			entry.sleep = int(request.POST['sleep'])
+			attributes=['movie','lecture','self_study','exercise','went_out','sleep']
+			total_hrs=0
+			for i in attributes:
+				total_hrs+=int(request.POST[i])
 			now = datetime.now()
 			same_day_entry = Entry.objects.filter(
 				time_stamp__day=now.day,
@@ -72,7 +51,11 @@ def entryNew(request):
 				time_stamp__year=now.year,
 				username=request.user.username)
 			print (len(same_day_entry))
-			if (entry.movie+entry.lectures+entry.self_study+entry.exercise+entry.went_out+entry.sleep)<=24 and len(same_day_entry)==0:
+			if len(same_day_entry)==0 and total_hrs<=24:
+				entry = Entry(username=UserDetail.objects.get(username=request.user.username),
+				movie=int(request.POST['movie']),lectures=int(request.POST['lecture']),
+					self_study=int(request.POST['self_study']),exercise=int (request.POST['exercise']),
+					went_out=int(request.POST['went_out']),sleep=int(request.POST['sleep']))
 				userbase = UserDetail.objects.get(username=request.user.username)
 				userbase.totSleep+=entry.sleep
 				userbase.totMovie+=entry.movie
@@ -81,7 +64,7 @@ def entryNew(request):
 				userbase.totLectures+=entry.lectures
 				userbase.totWent+=entry.went_out
 				userbase.logs +=1
-				userbase.score = userbase.totStudy+userbase.totWent+userbase.totLectures+userbase.totExercise+userbase.totMovie+userbase.totSleep
+				userbase.score += total_hrs
 				labels=['Movies','Lectures','Self_Study','Exercise','WentOut','Sleep']
 
 				sizes = [userbase.totMovie,userbase.totLectures,userbase.totStudy,userbase.totExercise,
@@ -92,15 +75,16 @@ def entryNew(request):
 				entry.save()
 				return HttpResponseRedirect(reverse('index'))
 			elif len(same_day_entry)!=0:
-				return HttpResponse("Only One jornoul per day , Shant reh bhadve")
+				return HttpResponse("Only One entry per day allowed ")
 			else:
 				return HttpResponse("YOU MESSED UP")
 	else:
 		curNewEntry = NewEntry()
 	return render(request,'new_entry.html')
 
+
+#To generate Leaderboard
 def leaderBoard(request):
-	userLogPair = (0,0)
 	board=UserDetail.objects.values_list('username', 'rating')
 	rankings=[]
 	for x in board:
@@ -108,8 +92,7 @@ def leaderBoard(request):
 	rankings=sorted(rankings,reverse=True)
 	return render(request,'leaderboard.html',{'userdata':rankings})
 
-
-
+#To generate report of logged in user
 def  report(request):
 	if request.user.is_authenticated:
 		username = request.user.username
@@ -119,64 +102,39 @@ def  report(request):
 	else:
 		return HttpResponseRedirect(reverse('login'))
 
-
+#To create profile of user , the profile is public
 def profile(request,user):
-	print(user)
-	data=user
-	print(data)
 	try:
 		userbase = UserDetail.objects.get(username=user)
 	except UserDetail.DoesNotExist:
 		return HttpResponse("User Does Not Exist")
-	#dum = UserDetail.objects.get(username=username)
-	#print (len(userbase))
 	
 	return render(request,'profile.html',{'data':userbase})
-	
+
+#To compare between 2 users
+import itertools
 def compare(request,user1,user2):
-	try:
-		player1 = UserDetail.objects.get(username=user1)
-		player2 = UserDetail.objects.get(username=user2)
-	except UserDetail.DoesNotExist:
-		return HttpResponse("Compare between Valid Users")
 	winner=[]   #0 for tie 1 for player1 and 2 for player2
-	#attributes=['totMovie','totWent','totLectures','totExercise','totWent','totSleep','logs']
-	if player1.totMovie>player2.totMovie:
-		winner.append(user1)
-	elif player2.totMovie>player1.totMovie:
-		winner.append(user2)
-	else:
-		winner.append('tie')
-	if player1.totWent>player2.totWent:
-		winner.append(user1)
-	elif player2.totWent>player1.totWent:
-		winner.append(user2)
-	else:
-		winner.append('tie')
-	if player1.totLectures>player2.totLectures:
-		winner.append(user1)
-	elif player2.totLectures>player1.totLectures:
-		winner.append(user2)
-	else:
-		winner.append('tie')
-	if player1.totStudy>player2.totStudy:
-		winner.append(user1)
-	elif player2.totStudy>player1.totStudy:
-		winner.append(user2)
-	else:
-		winner.append('tie')
-	if player1.totSleep>player2.totSleep:
-		winner.append(user1)
-	elif player2.totSleep>player1.totSleep:
-		winner.append(user2)
-	else:
-		winner.append('tie')
-	if player1.totExercise>player2.totExercise:
-		winner.append(user1)
-	elif player2.totExercise>player1.totExercise:
-		winner.append(user2)
-	else:
-		winner.append('tie')
+	attributes=['totMovie','totWent','totLectures',
+	'totExercise','totWent','totSleep']
+	length = len(attributes)
+	player1=UserDetail.objects.values_list('totMovie','totWent',
+		'totLectures','totExercise','totWent','totSleep',
+		).filter(username=user1)
+
+	player2=UserDetail.objects.values_list('totMovie','totWent',
+		'totLectures','totExercise','totWent','totSleep',
+		).filter(username=user2)
+	if (len(player1)==0 or len(player2)==0):
+		return HttpResponse("Invalid User") 
+	for itr in range(0,length):
+		print(player2)
+		if player1[0][itr]>player2[0][itr]:
+			winner.append(user1)
+		elif player1[0][itr]<player2[0][itr]:
+			winner.append(user2)
+		else:
+			winner.append('tie')
 	return render(request,'compare_users.html',{'winner':winner})
 
 
@@ -191,7 +149,6 @@ def ratings(request):
 		ListOfUsers.append((x[0],x[1],x[2]))
 		numberOfWins[x[0]]=0
 		totRating+=x[2]
-
 	for x in ListOfUsers:
 		wins=0
 		loss=0
@@ -200,13 +157,16 @@ def ratings(request):
 				wins+=1
 			elif x[1]<y[1]:
 				loss+=1
+		curRating=RatingHistory()
 		curUser = UserDetail.objects.get(username=x[0])
-		newRating=max(0,(totRating-x[2])+400*(wins-loss)/games)
+		curRating.username = UserDetail.objects.get(username=x[0])
+		newRating=max(1000,x[2]+50*(wins-loss)/(games*(curUser.logs)))
 		print(newRating)
 		curUser.rating=newRating
+		curRating.rating=newRating
+		curRating.save()
 		curUser.save()
 	return HttpResponse("okok")
-
 
 def updatePic(request):
 	if request.user.is_authenticated:
