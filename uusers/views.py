@@ -156,7 +156,11 @@ def profile(request,user):
 
 #To compare between 2 users
 
-def compare(request,user1,user2):
+def compare(request):
+	if not('user1' in request.GET and 'user2' in request.GET):
+		return render(request,'compare_form.html')
+	user1 = request.GET['user1']
+	user2 = request.GET['user2']	
 
 	winner = []   #0 for tie 1 for player1 and 2 for player2
 	NUMBER_OF_EVALUATORS = 6
@@ -253,12 +257,4 @@ def update_pic(request):
 
 		return HttpResponseRedirect(reverse('login'))
 
-def compare_form(request):
-
-	if request.method =='POST':
-		user1 = request.POST['user1']
-		user2 = request.POST['user2']
-		return HttpResponseRedirect(user1+'/'+user2)
-	else:
-		return render(request,'compare_form.html')
 	

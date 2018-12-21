@@ -9,8 +9,8 @@ urlpatterns=[
 	path('leaderboard',views.leaderboard,name='leaderboard'),
 	path('report',views.report,name='report'),
 	path('profile/<user>/',views.profile,name='profile'),
-	path('compare/',views.compare_form,name='compareform'),
-	path('compare/<user1>/<user2>/',views.compare,name='compare'),
+	#path('compare/',views.compare_form,name='compareform'),
+	path('compare/',views.compare,name='compare'),
 	path('ratings/',views.ratings,name='rating'),
 	path('updatepic',views.update_pic,name='updatepic'),
 	
