@@ -5,14 +5,14 @@ from django.conf import settings
 urlpatterns=[
 	path('',views.index,name='index'),
 	path('signup/',views.SignUp.as_view(),name='signup'),
-	path('entry/',views.entryNew,name='entry'),
-	path('leaderboard',views.leaderBoard,name='leaderboard'),
+	path('entry/',views.entry_new,name='entry'),
+	path('leaderboard',views.leaderboard,name='leaderboard'),
 	path('report',views.report,name='report'),
 	path('profile/<user>/',views.profile,name='profile'),
-	path('compare/',views.compareForm,name='compareform'),
+	path('compare/',views.compare_form,name='compareform'),
 	path('compare/<user1>/<user2>/',views.compare,name='compare'),
 	path('ratings/',views.ratings,name='rating'),
-	path('updatepic',views.updatePic,name='updatepic'),
+	path('updatepic',views.update_pic,name='updatepic'),
 	
 ] 
 

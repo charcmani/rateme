@@ -22,7 +22,10 @@ class UserDetail(models.Model):
 class Entry(models.Model):
 	"""Table to store entries of users"""
 	id = models.AutoField(primary_key = True)
-	username = models.ForeignKey(UserDetail,on_delete=models.CASCADE,db_column='username')
+	username = models.ForeignKey(
+		UserDetail,on_delete=models.CASCADE,
+		db_column='username'
+		)
 	time_stamp = models.DateTimeField(auto_now=True)
 	movie  = models.IntegerField(default=0)
 	self_study = models.IntegerField(default=0)
@@ -35,7 +38,10 @@ class RatingHistory(models.Model):
 	"""
 	Table to store rating of diff users
 	"""
-	username = models.ForeignKey(UserDetail,on_delete=models.CASCADE,db_column='username')
+	username = models.ForeignKey(
+		UserDetail,on_delete=models.CASCADE,
+		db_column='username'
+		)
 	rating = models.IntegerField(default=0)
 	
 
